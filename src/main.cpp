@@ -8,7 +8,7 @@
 
 using boost::asio::ip::tcp;
 
-// ======= DEFINIÇÕES AUXILIARES =======
+// // ======= DEFINIÇÕES AUXILIARES =======
 struct LogRecord {
     int sensor_id;
     std::time_t timestamp;
@@ -22,7 +22,7 @@ void save_log_record(const LogRecord& record) {
     file.close();
 }
 
-// ======= CLASSE SESSION =======
+// // ======= CLASSE SESSION =======
 class session : public std::enable_shared_from_this<session> {
 public:
     session(tcp::socket socket) : socket_(std::move(socket)) { }
@@ -94,14 +94,25 @@ private:
     tcp::acceptor acceptor_;
 };
 
-// ======= FUNÇÃO PRINCIPAL =======
+// // ======= FUNÇÃO PRINCIPAL =======
 int main() {
     try {
         boost::asio::io_context io_context;
-        server s(io_context, 12345);  // Porta fixa ou configurável
-        io_context.run();
+        server s(io_context, 9000);  // Inicializa o servidor na porta 12345
+        std::cout << "Servidor rodando na porta 9000..." << std::endl;
+        io_context.run();  // Começa a processar eventos de rede (aceitar conexões, etc)
     } catch (std::exception& e) {
         std::cerr << "Erro: " << e.what() << std::endl;
     }
+    printf("Hello, World!\n");
+    std::cout << "Está funcionando!" << std::endl; 
+    LogRecord teste; 
+    teste.sensor_id = 1;
+    teste.timestamp = std::time(nullptr);
+    teste.data = "Teste de log\n";
+    save_log_record(teste);
+    std::cout << "Log gravado com sucesso!" << std::endl;
     return 0;
 }
+
+ 
